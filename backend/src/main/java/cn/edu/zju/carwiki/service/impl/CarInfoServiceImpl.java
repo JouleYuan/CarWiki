@@ -1,8 +1,8 @@
 package cn.edu.zju.carwiki.service.impl;
 
-import cn.edu.zju.carwiki.entity.CarInfo;
-import cn.edu.zju.carwiki.entity.PriceStatistic;
-import cn.edu.zju.carwiki.entity.ScoreStatistic;
+import cn.edu.zju.carwiki.entity.object.CarInfo;
+import cn.edu.zju.carwiki.entity.statistic.PriceStatistic;
+import cn.edu.zju.carwiki.entity.statistic.ScoreStatistic;
 import cn.edu.zju.carwiki.service.CarInfoService;
 import cn.edu.zju.carwiki.solr.SolrJClient;
 import org.apache.solr.common.SolrDocument;

@@ -1,4 +1,4 @@
-package cn.edu.zju.carwiki.entity;
+package cn.edu.zju.carwiki.entity.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

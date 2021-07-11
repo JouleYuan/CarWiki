@@ -1,7 +1,7 @@
 package cn.edu.zju.carwiki.service;
 
-import cn.edu.zju.carwiki.entity.PriceStatistic;
-import cn.edu.zju.carwiki.entity.ScoreStatistic;
+import cn.edu.zju.carwiki.entity.statistic.PriceStatistic;
+import cn.edu.zju.carwiki.entity.statistic.ScoreStatistic;
 
 import java.util.List;
 import java.util.Map;

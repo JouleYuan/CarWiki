@@ -1,8 +1,8 @@
 package cn.edu.zju.carwiki.controller;
 
-import cn.edu.zju.carwiki.entity.PriceStatistic;
+import cn.edu.zju.carwiki.entity.statistic.PriceStatistic;
 import cn.edu.zju.carwiki.entity.ResponseData;
-import cn.edu.zju.carwiki.entity.ScoreStatistic;
+import cn.edu.zju.carwiki.entity.statistic.ScoreStatistic;
 import cn.edu.zju.carwiki.service.CarInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

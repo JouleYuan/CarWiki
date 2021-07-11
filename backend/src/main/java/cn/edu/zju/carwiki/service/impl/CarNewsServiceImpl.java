@@ -1,6 +1,7 @@
 package cn.edu.zju.carwiki.service.impl;
 
-import cn.edu.zju.carwiki.entity.CarNews;
+import cn.edu.zju.carwiki.entity.object.CarNews;
+import cn.edu.zju.carwiki.entity.statistic.WatchCountStatistic;
 import cn.edu.zju.carwiki.service.CarNewsService;
 import cn.edu.zju.carwiki.solr.SolrJClient;
 import org.apache.solr.common.SolrDocument;
@@ -18,6 +19,7 @@ import java.util.*;
 @Service(value = "CarNewsService")
 public class CarNewsServiceImpl implements CarNewsService {
     static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    static final int[] watchCountBounds = new int[] {0, 100, 1000, 10000, 100000, 1000000};
 
     @Autowired
     private SolrJClient solrJClient;
@@ -50,5 +52,27 @@ public class CarNewsServiceImpl implements CarNewsService {
         resultMap.put("result", result);
 
         return resultMap;
+    }
+
+    @Override
+    public List<WatchCountStatistic> selectWatchCountStatistics(Map<String, String> queryMap, String preFq) {
+        List<WatchCountStatistic> watchCountStatistics = new ArrayList<>();
+
+        for(int i = 1; i <= watchCountBounds.length; i++) {
+            StringBuilder fq = new StringBuilder(preFq);
+            if(fq.length() != 0) fq.append(" AND ");
+
+            fq.append("watch_count").append(":[").append(watchCountBounds[i - 1]).append(" TO ");
+            if(i == watchCountBounds.length) fq.append("*}");
+            else fq.append(watchCountBounds[i]).append("}");
+            queryMap.put("fq", fq.toString());
+
+            SolrDocumentList solrDocumentList = solrJClient.query(queryMap, "carnews");
+            if(solrDocumentList == null) return null;
+            if(i == watchCountBounds.length) watchCountStatistics.add(new WatchCountStatistic(watchCountBounds[i - 1], null, solrDocumentList.getNumFound()));
+            else watchCountStatistics.add(new WatchCountStatistic(watchCountBounds[i - 1], watchCountBounds[i], solrDocumentList.getNumFound()));
+        }
+
+        return watchCountStatistics;
     }
 }
