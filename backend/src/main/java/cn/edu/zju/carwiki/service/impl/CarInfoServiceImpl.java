@@ -91,8 +91,8 @@ public class CarInfoServiceImpl implements CarInfoService {
         List<ScoreStatistic> scoreStatistics = new ArrayList<>();
 
         for(int i = 1; i < scoreBounds.length; i++) {
-            Long dong_score = innerSelectScoreStatistics(queryMap, preFq, "dong_score", i);
-            Long jia_score = innerSelectScoreStatistics(queryMap, preFq, "jia_score", i);
+            Long dong_score = selectScoreStatistic(queryMap, preFq, "dong_score", i);
+            Long jia_score = selectScoreStatistic(queryMap, preFq, "jia_score", i);
             if(dong_score == null || jia_score == null) return null;
             scoreStatistics.add(new ScoreStatistic(scoreBounds[i - 1], scoreBounds[i], dong_score, jia_score));
         }
@@ -100,7 +100,7 @@ public class CarInfoServiceImpl implements CarInfoService {
         return scoreStatistics;
     }
 
-    private Long innerSelectScoreStatistics(Map<String, String> queryMap, String preFq, String field, int i) {
+    private Long selectScoreStatistic(Map<String, String> queryMap, String preFq, String field, int i) {
         StringBuilder fq = new StringBuilder(preFq);
         if(fq.length() != 0) fq.append(" AND ");
 

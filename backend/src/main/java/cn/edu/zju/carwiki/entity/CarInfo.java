@@ -16,7 +16,7 @@ public class CarInfo {
     /** The brand of the car */
     private String brand;
 
-    /** The picture of the car */
+    /** The picture url of the car */
     private String picture;
 
     /** The lowest price given by the automaker */
