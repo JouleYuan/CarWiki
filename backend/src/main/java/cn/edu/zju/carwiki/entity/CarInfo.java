@@ -2,7 +2,6 @@ package cn.edu.zju.carwiki.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author jouleyuan
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class CarInfo {
     /** The name of the car */
     private String name;
@@ -50,21 +48,4 @@ public class CarInfo {
 
     /** The gearbox of the car */
     private String gearbox;
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (obj == null) return false;
-
-        if (getClass() != obj.getClass()) return false;
-
-        CarInfo other = (CarInfo) obj;
-        return name.equals(other.getName());
-    }
 }

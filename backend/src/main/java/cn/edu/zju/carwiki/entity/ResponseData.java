@@ -15,12 +15,6 @@ public class ResponseData {
     private final int code;
     private final Map<String, Object> data;
 
-    public ResponseData() {
-        this.message = "";
-        this.code = -1;
-        this.data = new HashMap<>();
-    }
-
     private ResponseData(int code, String message) {
         this.code = code;
         this.message = message;

@@ -1,6 +1,8 @@
 package cn.edu.zju.carwiki.controller;
 
+import cn.edu.zju.carwiki.entity.PriceStatistic;
 import cn.edu.zju.carwiki.entity.ResponseData;
+import cn.edu.zju.carwiki.entity.ScoreStatistic;
 import cn.edu.zju.carwiki.service.CarInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,8 +47,8 @@ public class CarInfoController {
         StringBuilder fq = new StringBuilder();
         if(category != null) fq.append("category:").append(category);
         if(size != null) {
-            if(fq.length() != 0) fq.append(" AND");
-            fq.append(" size:").append(size);
+            if(fq.length() != 0) fq.append(" AND ");
+            fq.append("size:").append(size);
         }
         queryMap.put("fq", fq.toString());
 
@@ -66,13 +69,18 @@ public class CarInfoController {
         StringBuilder fq = new StringBuilder();
         if(category != null) fq.append("category:").append(category);
         if(size != null) {
-            if(fq.length() != 0) fq.append(" AND");
-            fq.append(" size:").append(size);
+            if(fq.length() != 0) fq.append(" AND ");
+            fq.append("size:").append(size);
         }
-        queryMap.put("fq", fq.toString());
 
-        Map<String, Object> resultMap = carInfoService.selectStatistics(queryMap);
-        if(resultMap == null) return ResponseData.serverInternalError();
-        else return ResponseData.ok(resultMap);
+        List<PriceStatistic> priceStatistics = carInfoService.selectPriceStatistics(queryMap, fq.toString());
+        List<ScoreStatistic> scoreStatistics = carInfoService.selectScoreStatistics(queryMap, fq.toString());
+
+        if(priceStatistics == null || scoreStatistics == null) return ResponseData.serverInternalError();
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("price", priceStatistics);
+        resultMap.put("score", scoreStatistics);
+        return ResponseData.ok(resultMap);
     }
 }

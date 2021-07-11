@@ -1,7 +1,8 @@
 package cn.edu.zju.carwiki.service.impl;
 
 import cn.edu.zju.carwiki.entity.CarInfo;
-import cn.edu.zju.carwiki.entity.ResponseData;
+import cn.edu.zju.carwiki.entity.PriceStatistic;
+import cn.edu.zju.carwiki.entity.ScoreStatistic;
 import cn.edu.zju.carwiki.service.CarInfoService;
 import cn.edu.zju.carwiki.solr.SolrJClient;
 import org.apache.solr.common.SolrDocument;
@@ -20,6 +21,9 @@ import java.util.Map;
  */
 @Service(value = "CarInfoService")
 public class CarInfoServiceImpl implements CarInfoService {
+    static final double[] priceBounds = new double[] {0, 10, 25, 50, 100};
+    static final double[] scoreBounds = new double[] {0, 1, 2, 3, 4, 5};
+
     @Autowired
     private SolrJClient solrJClient;
 
@@ -60,7 +64,54 @@ public class CarInfoServiceImpl implements CarInfoService {
     }
 
     @Override
-    public Map<String, Object> selectStatistics(Map<String, String> queryMap) {
-        return null;
+    public List<PriceStatistic> selectPriceStatistics(Map<String, String> queryMap, String preFq) {
+        List<PriceStatistic> priceStatistics = new ArrayList<>();
+
+        for(int i = 1; i <= priceBounds.length; i++) {
+            StringBuilder fq = new StringBuilder(preFq);
+            if(fq.length() != 0) fq.append(" AND ");
+
+            if(i == priceBounds.length) fq.append("max_price:[").append(priceBounds[i - 1]).append(" TO *}");
+            else fq.append("min_price:{* TO ").append(priceBounds[i]).append("}")
+                        .append(" AND max_price:[").append(priceBounds[i - 1]).append(" TO *}");
+            queryMap.put("fq", fq.toString());
+
+            SolrDocumentList solrDocumentList = solrJClient.query(queryMap, "carinfo");
+            if(solrDocumentList == null) return null;
+
+            if(i == priceBounds.length) priceStatistics.add(new PriceStatistic(priceBounds[i - 1], null, solrDocumentList.getNumFound()));
+            else priceStatistics.add(new PriceStatistic(priceBounds[i - 1], priceBounds[i], solrDocumentList.getNumFound()));
+        }
+
+        return priceStatistics;
+    }
+
+    @Override
+    public List<ScoreStatistic> selectScoreStatistics(Map<String, String> queryMap, String preFq) {
+        List<ScoreStatistic> scoreStatistics = new ArrayList<>();
+
+        for(int i = 1; i < scoreBounds.length; i++) {
+            Long dong_score = innerSelectScoreStatistics(queryMap, preFq, "dong_score", i);
+            Long jia_score = innerSelectScoreStatistics(queryMap, preFq, "jia_score", i);
+            if(dong_score == null || jia_score == null) return null;
+            scoreStatistics.add(new ScoreStatistic(scoreBounds[i - 1], scoreBounds[i], dong_score, jia_score));
+        }
+
+        return scoreStatistics;
+    }
+
+    private Long innerSelectScoreStatistics(Map<String, String> queryMap, String preFq, String field, int i) {
+        StringBuilder fq = new StringBuilder(preFq);
+        if(fq.length() != 0) fq.append(" AND ");
+
+        fq.append(field).append(":[").append(scoreBounds[i - 1]).append(" TO ").append(scoreBounds[i]);
+        if(i == scoreBounds.length - 1) fq.append("]");
+        else fq.append("}");
+        queryMap.put("fq", fq.toString());
+
+        SolrDocumentList solrDocumentList = solrJClient.query(queryMap, "carinfo");
+        if(solrDocumentList == null) return null;
+
+        return solrDocumentList.getNumFound();
     }
 }

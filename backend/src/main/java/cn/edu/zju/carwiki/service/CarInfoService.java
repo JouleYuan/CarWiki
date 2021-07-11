@@ -1,5 +1,9 @@
 package cn.edu.zju.carwiki.service;
 
+import cn.edu.zju.carwiki.entity.PriceStatistic;
+import cn.edu.zju.carwiki.entity.ScoreStatistic;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,5 +12,6 @@ import java.util.Map;
  */
 public interface CarInfoService {
     Map<String, Object> selectObjects(Map<String, String> queryMap, int pageSize);
-    Map<String, Object> selectStatistics(Map<String, String> queryMap);
+    List<PriceStatistic> selectPriceStatistics(Map<String, String> queryMap, String fq);
+    List<ScoreStatistic> selectScoreStatistics(Map<String, String> queryMap, String fq);
 }
