@@ -4,7 +4,7 @@ import Pagination from "material-ui-flat-pagination";
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import axios from 'axios';
 const style = {
   pagination: {
     margin: '20px auto'
@@ -49,8 +49,28 @@ const pageSize = 10;
 //   }
 // ]
 
-const catalogs = ["全部资源", "介绍", "官方文档", "博客文章", "项目实战", "视频教程", "技术问答"];
+const catalogs = ["综合","", "找车", "找资讯"];
+/* const fetchDataclq = (query, page=1) =>  {
+  const input = query.input;
+  const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+  let result = await axios
+    .get(`http://47.100.55.98/api/info/object?key=%E5%A5%94%E9%A9%B0&page_no=1&page_size=10`)
+    .then(res => {
+      console.log(res);
+      if (res.data.code === 0) {
+        return res.data.data;
+      } else {
+        console.error("读取数据信息失败，" + res.data.message);
+        return null;
+      }
+    })
+    .catch(err => {
+      console.error("读取数据信息失败");
+    });
+  if (result !== null && result !== undefined) {
 
+  }
+}; */
 class SearchResult extends Component {
   state = {
     query: this.props.query, //query={{"input": input, "catalog": catalog, "time": time }}
@@ -84,15 +104,29 @@ class SearchResult extends Component {
     }
     
   }
-  
-  fetchData = (query, page=1) => {
+
+ /*  fetchData = (query, page=1) => {
     const input = query.input;
     const catalog = query.catalog || -1;
     const time = query.time || 0;
-    const url = `http://10.214.213.43:9999/search?key=${input}&catalog=${catalog}&page=${page}&size=${pageSize}&delta=${time}`;
-    
-    if(input) {
-      fetch(url)
+    const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+    fetch(url, {
+    method: "GET",
+  
+  mode: "no-cors",
+}).then(function(res) {
+  if (res.status === 200) {
+      return console.log(res)
+  } else {
+      return Promise.reject(res)
+  }
+}).then(function(data) {
+  console.log(data);
+}).catch(function(err) {
+  console.log(err);
+}); */
+   /*  if(input) {
+      fetch(url,{ mode: "no-cors" })
       .then(res => res.json())
       .then((json) => {
         if(json.code === 200) {
@@ -101,14 +135,33 @@ class SearchResult extends Component {
             total: json.data.total,
             loading: false
           })
+          console.log(json.data.result);
         }
       })
     }
     setTimeout(() => {
       window.scrollTo(0, 0);
-    }, 1000);
+    }, 1000); */
+    
+  /* } */
+  fetchData = (query, page=1) =>  {
+    const input = query.input;
+    const catalog = query.catalog || -1;
+    console.log(catalog);
+    const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+    let result = axios
+      .get(url)
+      .then(res =>{ 
+        if(res.data.code===200){
+          this.setState({
+            data: res.data.data.result,
+            total: res.data.data.result.length,
+            loading: false
+          })
+          console.log(res.data.data.result);
+        }
+      });
   }
-
   changePage = (offset) => {
     const page = 1 + offset / pageSize;
     this.setState({ 
@@ -120,6 +173,7 @@ class SearchResult extends Component {
   }
 
   render() {
+    /* fetchDataclq(); */
     const {classes, query} = this.props;
     const { offset, data, total, loading } = this.state;
     return (
