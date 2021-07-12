@@ -1,0 +1,12 @@
+[
+    {
+        "title": "由内到外的豪华感 小哥带你一起看奔驰CLS级",
+        "context": "前50字   视频就下面的简介",
+        "picture":"封面图片的url",
+        "author":"资讯作者",
+        "URL":"资讯链接url",
+        "Time":"发布时间(YYMMDD:HHMM)",
+        "From":"资讯来源（懂车帝 or 汽车之家）",
+        "type":"文字 or 视频"
+    }
+]
