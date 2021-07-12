@@ -76,7 +76,7 @@ class SearchBar extends Component {
       this.props.history.push({
         pathname: `/search/query/${input}`,
         query: {
-          input: input
+          input: input,
         }
       });
     }

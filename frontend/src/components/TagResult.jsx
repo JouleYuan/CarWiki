@@ -4,7 +4,7 @@ import Pagination from "material-ui-flat-pagination";
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import axios from 'axios';
 const style = {
   pagination: {
     margin: '20px auto'
@@ -49,7 +49,7 @@ class TagResult extends Component {
     }
   }
   
-  fetchData = (tag, page=1) => {
+  /* fetchData = (tag, page=1) => {
     const url = `http://10.214.213.43:9999/getAllTag?page=${page}&size=${pageSize}&key=${tag}`;
     
     if(tag) {
@@ -66,8 +66,22 @@ class TagResult extends Component {
       })
     }
     
+  } */
+  fetchData = (tag, page=1) =>  {
+    const url = `http://47.100.55.98/api/news/object?key=${tag}&page_no=${page}&page_size=${pageSize}`;
+    let result = axios
+      .get(url)
+      .then(res =>{ 
+        if(res.data.code===200){
+          this.setState({
+            data: res.data.data.result,
+            total: res.data.data.result.length,
+            loading: false
+          })
+          console.log(res.data.data.result);
+        }
+      });
   }
-
   changePage = (offset) => {
     const page = 1 + offset / pageSize;
     this.setState({ 

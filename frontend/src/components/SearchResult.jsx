@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
+import { Divider } from '_@material-ui_core@4.12.1@@material-ui/core';
 const style = {
   pagination: {
     margin: '20px auto'
@@ -75,10 +76,14 @@ class SearchResult extends Component {
   state = {
     query: this.props.query, //query={{"input": input, "catalog": catalog, "time": time }}
     page: 1,
+    pagenews:1,
     data: [],
+    datanews:[],
     offset: 0,
     total: 0,
-    loading: true
+    totalnews:0,
+    loading: true,
+    loadingnews:true
   }
 
   componentDidMount() {
@@ -97,53 +102,15 @@ class SearchResult extends Component {
       this.setState({
         query: nextProps.query,
         page: 1,
+        pagenews:1,
         offset: 0,
-        loading: true
+        loading: true,
+        loadingnews:true,
       })
       this.fetchData(nextProps.query, 1);
     }
     
   }
-
- /*  fetchData = (query, page=1) => {
-    const input = query.input;
-    const catalog = query.catalog || -1;
-    const time = query.time || 0;
-    const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
-    fetch(url, {
-    method: "GET",
-  
-  mode: "no-cors",
-}).then(function(res) {
-  if (res.status === 200) {
-      return console.log(res)
-  } else {
-      return Promise.reject(res)
-  }
-}).then(function(data) {
-  console.log(data);
-}).catch(function(err) {
-  console.log(err);
-}); */
-   /*  if(input) {
-      fetch(url,{ mode: "no-cors" })
-      .then(res => res.json())
-      .then((json) => {
-        if(json.code === 200) {
-          this.setState({
-            data: json.data.result,
-            total: json.data.total,
-            loading: false
-          })
-          console.log(json.data.result);
-        }
-      })
-    }
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 1000); */
-    
-  /* } */
   fetchData = (query, page=1) =>  {
     const input = query.input;
     const catalog = query.catalog || -1;
@@ -161,41 +128,124 @@ class SearchResult extends Component {
           console.log(res.data.data.result);
         }
       });
+    const newsurl=`http://47.100.55.98/api/news/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+    let resultnews = axios
+    .get(newsurl)
+    .then(resnews =>{ 
+      if(resnews.data.code===200){
+        this.setState({
+          datanews: resnews.data.data.result,
+          totalnews: resnews.data.data.result.length,
+          loadingnews: false
+        })
+        console.log(resnews.data.data.result);
+      }
+    });
   }
   changePage = (offset) => {
     const page = 1 + offset / pageSize;
+    const pagenews = 1 + offset / pageSize;
     this.setState({ 
       offset: offset,
       page: page,
-      loading: true
+      pagenews:pagenews,
+      loading: true,
+      loadingnews:true
     });
     this.fetchData(this.state.query, page);
   }
-
+  changenewsPage = (offset) => {
+    const page = 1 + offset / pageSize;
+    const pagenews = 1 + offset / pageSize;
+    this.setState({ 
+      offset: offset,
+      page: page,
+      pagenews:pagenews,
+      loading: true,
+      loadingnews:true
+    });
+    this.fetchData(this.state.query, page);
+  }
+  
   render() {
-    /* fetchDataclq(); */
     const {classes, query} = this.props;
-    const { offset, data, total, loading } = this.state;
+    const { offset, data, total, loading,datanews,loadingnews,totalnews } = this.state;
+    function favor(fr){
+    if(fr<=0){
+      return <div>
+      <Typography variant="subtitle1" component="h2" className={classes.total}>
+        [ {catalogs[query.catalog + 1]} ] - 显示 {total} 条最优搜索结果
+      </Typography>
+      <ItemList data={data}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offset}
+          total={total}
+          onClick={(event, offset) => this.changePage(offset)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div>
+      <Divider/>
+      <Typography variant="subtitle1" component="h2" className={classes.total}>
+        [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
+      </Typography>
+      <ItemList data={datanews}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offset}
+          total={totalnews}
+          onClick={(event, offset) => this.changenewsPage(offset)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div>
+      </div>;
+    }else if(fr==1){
+      return <div>
+      <Typography variant="subtitle1" component="h2" className={classes.total}>
+        [ {catalogs[query.catalog + 1]} ] - 显示 {total} 条最优搜索结果
+      </Typography>
+      <ItemList data={data}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offset}
+          total={total}
+          onClick={(event, offset) => this.changePage(offset)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div>
+      </div>;
+    }else if(fr==2){
+      return <div>
+      <Typography variant="subtitle1" component="h2" className={classes.total}>
+        [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
+      </Typography>
+      <ItemList data={datanews}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offset}
+          total={totalnews}
+          onClick={(event, offset) => this.changenewsPage(offset)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div>
+      </div>;
+    }
+  }
     return (
       loading ? 
       ( <div className={classes.progress}>
           <CircularProgress />
         </div>) : (
         <div>
-        <Typography variant="subtitle1" component="h2" className={classes.total}>
-          [ {catalogs[query.catalog + 1]} ] - 显示 {total} 条最优搜索结果
-        </Typography>
-        <ItemList data={data}/>
-        <div className={classes.pagination}>
-          <Pagination
-            limit={pageSize}
-            offset={offset}
-            total={total}
-            onClick={(event, offset) => this.changePage(offset)}
-            otherPageColor="default"
-            currentPageColor="secondary"
-          />
-        </div>
+        {favor(query.catalog)}
         </div>
       )
     )

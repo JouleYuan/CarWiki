@@ -56,7 +56,7 @@ class SideBar extends Component {
   componentWillReceiveProps(nextProps) {
     if(nextProps.input !== this.props.input) {
       this.setState({
-        selectedIndex: -1
+        selectedIndex: this.props.catal
       })
     }
   }

@@ -95,7 +95,7 @@ class ResultPage extends Component {
         <div className={classes.wrapper}>
           <Grid container spacing={4} className={classes.content}>
             <Grid item xs={12} sm={3} md={2} className={classes.sider}>
-              <SideBar input={input} changeCatalog={this.changeCatalog} />
+              <SideBar input={input}  catal={catalog} changeCatalog={this.changeCatalog} />
             </Grid>
             <Grid item xs={12} sm={6} md={7}>
               <Switch>
