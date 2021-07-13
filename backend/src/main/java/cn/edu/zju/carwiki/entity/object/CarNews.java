@@ -3,8 +3,6 @@ package cn.edu.zju.carwiki.entity.object;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * @author jouleyuan
  * @date 2021/7/11 11:04
