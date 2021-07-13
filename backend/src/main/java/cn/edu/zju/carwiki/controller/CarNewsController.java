@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author jouleyuan
@@ -20,6 +19,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/news")
 public class CarNewsController {
+    static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+    static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+    static {
+        sdfDate.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdfTime.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
     @Autowired
     private CarNewsService carNewsService;
 
@@ -30,7 +36,8 @@ public class CarNewsController {
                                    @RequestParam(value = "sort", defaultValue = "primary") String sort,
                                    @RequestParam(value = "author", required = false) String author,
                                    @RequestParam(value = "category", required = false) String category,
-                                   @RequestParam(value = "source", required = false) String source) {
+                                   @RequestParam(value = "source", required = false) String source,
+                                   @RequestParam(value = "start_time", required = false) Long startTime) {
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("q.op", "OR");
@@ -52,6 +59,12 @@ public class CarNewsController {
             if(fq.length() != 0) fq.append(" AND ");
             fq.append("source:").append(source);
         }
+        if(startTime != null) {
+            Date date = new Date(startTime);
+            if(fq.length() != 0) fq.append(" AND ");
+            fq.append("time:[").append(sdfDate.format(date)).append("T").
+                    append(sdfTime.format(date)).append("Z").append(" TO *}");
+        }
         queryMap.put("fq", fq.toString());
 
         Map<String, Object> resultMap = carNewsService.selectObjects(queryMap, pageSize);
@@ -63,7 +76,8 @@ public class CarNewsController {
     public ResponseData getStatistics(@RequestParam("key") String key,
                                       @RequestParam(value = "author", required = false) String author,
                                       @RequestParam(value = "category", required = false) String category,
-                                      @RequestParam(value = "source", required = false) String source) {
+                                      @RequestParam(value = "source", required = false) String source,
+                                      @RequestParam(value = "start_time", required = false) Long startTime) {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("q.op", "OR");
         queryMap.put("q", "title:\"" + key + "\"~4");
@@ -78,6 +92,12 @@ public class CarNewsController {
         if(source != null) {
             if(fq.length() != 0) fq.append(" AND ");
             fq.append("source:").append(source);
+        }
+        if(startTime != null) {
+            Date date = new Date(startTime);
+            if(fq.length() != 0) fq.append(" AND ");
+            fq.append("time:[").append(sdfDate.format(date)).append("T").
+                    append(sdfTime.format(date)).append("Z").append(" TO *}");
         }
 
         List<WatchCountStatistic> watchCountStatistics = carNewsService.selectWatchCountStatistics(queryMap, fq.toString());

@@ -41,12 +41,13 @@ public class CarNewsServiceImpl implements CarNewsService {
             String title = (String) i.getFieldValue("title");
             String picture = (String) i.getFieldValue("picture");
             String author = (String) i.getFieldValue("author");
+            String authorPicture = (String) i.getFieldValue("author_picture");
             String url = (String) i.getFieldValue("url");
             String time = sdf.format((Date) i.getFieldValue("time"));
             Long watchCount = (Long) i.getFieldValue("watch_count");
             String source = (String) i.getFieldValue("source");
             String category = (String) i.getFieldValue("category");
-            CarNews carNews = new CarNews(title, picture, author, url, time, watchCount, source, category);
+            CarNews carNews = new CarNews(title, picture, author, authorPicture, url, time, watchCount, source, category);
             result.add(carNews);
         }
         resultMap.put("result", result);

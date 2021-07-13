@@ -19,6 +19,9 @@ public class CarNews {
     /** the author of the news */
     String author;
 
+    /** the url link of the picture of the author */
+    String author_picture;
+
     /** the url link of the news */
     String url;
 
