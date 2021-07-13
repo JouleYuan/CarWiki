@@ -93,14 +93,14 @@ def spider(url):
             print('作者图片:',author_pic)
             print('时间:',publish_time)            
             print('=========================================================')
-            with open("News.csv", 'a',encoding="utf-8",newline="") as f2:
+            with open("AutoHomeNews.csv", 'a',encoding="utf-8",newline="") as f2:
                 cw = csv.writer(f2)
                 cw.writerow([type_,title,author_name,author_pic,news_pic,news_url,read_count,publish_time, source])
         except Exception as e:
             print(e)
 def run():
     global urls
-    with open("News.csv", 'w+',encoding="utf-8",newline="") as f2:
+    with open("AutoHomeNews.csv", 'w+',encoding="utf-8",newline="") as f2:
         cw = csv.writer(f2)
         cw.writerow(["type","title","author_name","author_pic","news_pic","news_url","read_count","publish_time", "source"])
     n = 1000
