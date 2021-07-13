@@ -2,15 +2,11 @@ import csv
 original=[]
 with open("car_news.csv", "r", encoding='utf-8') as f:
     original = f.readlines()
-    for i in range(len(original)):
-        original[i]=original[i].split(',')
-for i in range(1,len(original)):
-    if(original[i][0]=="article"):
-        original[i][0]="文字"
+for i in range(len(original)):
+    newstr=""
+    if(original[i][:original[i].find(",")]=="article"):
+        newstr=original[i].replace("article","文字",1)
     else:
-        original[i][0]="视频"
-    original[i][-1]=original[i][-1].strip("\n")
-    with open("DongNews.csv", "a", encoding='utf-8',newline="") as f:
-        cw = csv.writer(f)
-        #print(original[i])
-        cw.writerow(original[i])
+        newstr=original[i].replace("video","视频",1)
+    with open('DongNews1.csv', 'a',encoding='utf-8') as FD:
+        FD.write('{}'.format(newstr))
