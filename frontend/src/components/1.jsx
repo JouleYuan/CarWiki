@@ -6,6 +6,11 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { DateRange } from '@material-ui/icons';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Grid from '@material-ui/core/Grid';
 // import Checkbox from '@material-ui/core/Checkbox';
 // import Typography from '@material-ui/core/Typography';
 var date = new Date().getTime();
@@ -62,7 +67,7 @@ const options = {
   sources: ['CSDN', '简书', 'Coursera']
 }
 
-class Filter extends Component {
+class CustomizedSelects extends Component {
   state = {
     selectedTime: '时间不限',
     // selectedSources: []
@@ -75,6 +80,7 @@ var day=date.getDate();
 var h=date.getHours(); 
 var m=date.getMinutes();
 var s=date.getSeconds();  */
+console.log(e.target.value);
 var date = new Date().getTime();
 var submitTime = "";
 if(options.time.indexOf(e.target.value)===0){
@@ -127,30 +133,11 @@ console.log(submitTime);
     })
     const finaltime=submitTime
     selectedTime1 = e.target.value;
-    this.props.changeTime(finaltime);
-  }
-
-  handleSourceChange = value => () => {
-    let items = this.state.selectedSources;
-    let item = value;
-    let newItems = [...items];
-    let currentIndex = items.indexOf(item);
-    if(currentIndex === -1) {
-      newItems.push(item);
-    } else {
-      newItems.splice(currentIndex, 1);
-    }
-    console.log(newItems);
-
-    this.setState({
-      selectedSources: newItems
-    })
+    this.props.changenews_author(e.target.value);
   }
 
   render() {
     const { classes } = this.props;
-    const { selectedTime } = this.state;
-    /* const { selectedTime1 } = selectedTime; */
     return (
       <div className={classes.sider}>
         {/* <Typography variant="subtitle1" component="h2" className={classes.title}>
@@ -173,9 +160,22 @@ console.log(submitTime);
             ))}
           </Select>
         </FormControl>
+        <FormControl className={classes.margin}>
+        <InputLabel htmlFor="input-with-icon-adornment">With a start adornment</InputLabel>
+        <Input
+          onChange={this.handleTimeChange}
+          id="input-with-icon-adornment"
+          startAdornment={
+            <InputAdornment position="start">
+              <AccountCircle />
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+      
       </div>
     )
   }
 }
 
-export default withStyles(style)(Filter);
+export default withStyles(style)(CustomizedSelects);

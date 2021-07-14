@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import ItemList from "./ItemList";
+import CarnewsList from "./CarnewsList";
 import Pagination from "material-ui-flat-pagination";
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
 import { Divider } from '_@material-ui_core@4.12.1@@material-ui/core';
+import emitter from "./ev"
+import Filter from "../components/Filter";
 const style = {
   pagination: {
     margin: '20px auto'
@@ -23,32 +26,6 @@ const style = {
 }
 
 const pageSize = 10;
-// const test = [
-//   {
-//     title: 'Spring 教程',
-//     summary: 'Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run". We take an opinionated view of the Spring ...',
-//     date: '2015-12-25',
-//     source: 'CSDN',
-//     url: 'www.csdn.com',
-//     tags: [ 'spring', 'java', 'backend']
-//   },
-//   {
-//     title: 'Spring 教程',
-//     summary: 'Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run". We take an opinionated view of the Spring ...',
-//     date: '2015-12-25',
-//     source: 'CSDN',
-//     url: 'www.csdn.com',
-//     tags: [ 'spring', 'java', 'backend']
-//   },
-//   {
-//     title: 'Spring 教程',
-//     summary: 'Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run". We take an opinionated view of the Spring ...',
-//     date: '2015-12-25',
-//     source: 'CSDN',
-//     url: 'www.csdn.com',
-//     tags: [ 'spring', 'java', 'backend']
-//   }
-// ]
 
 const catalogs = ["综合","", "找车", "找资讯"];
 /* const fetchDataclq = (query, page=1) =>  {
@@ -80,15 +57,28 @@ class SearchResult extends Component {
     data: [],
     datanews:[],
     offset: 0,
+    offsetnews: 0,
     total: 0,
     totalnews:0,
     loading: true,
-    loadingnews:true
+    loadingnews:true,
+    time: 0,
+    size: "SUV",
+  }
+   // 组件销毁前移除事件监听
+   componentWillUnmount() {
+    emitter.removeListener(this.eventEmitter);
   }
 
   componentDidMount() {
     if(this.props.query)
-      this.fetchData(this.props.query, 1);
+      this.fetchData(this.props.query, 1,1,this.props.size);
+    this.eventEmitter = emitter.addListener("callMe", (msg) => {
+        this.setState({
+          size: msg
+        })
+        this.fetchData(this.props.query, 1,1, msg)
+      });
   }
 
   // componentDidUpdate() {
@@ -97,79 +87,158 @@ class SearchResult extends Component {
   // }
 
   componentWillReceiveProps(nextProps) {
-    // console.log("query", nextProps.query);
+    console.log("query", nextProps.query);
     if(this.props.query !== nextProps.query) {
       this.setState({
         query: nextProps.query,
         page: 1,
         pagenews:1,
         offset: 0,
+        offsetnews: 0,
         loading: true,
         loadingnews:true,
       })
-      this.fetchData(nextProps.query, 1);
+      this.fetchData(nextProps.query, 1,1);
     }
+    /* this.fetchData(nextProps.query, 1); */
     
   }
-  fetchData = (query, page=1) =>  {
+  changeTime = (time) => {
+    this.setState({time});
+    console.log("time", time);
+  }
+  fetchData = (query,page,pagenews,size1) =>  {
     const input = query.input;
     const catalog = query.catalog || -1;
+    const news_author=query.news_author;
+    const news_sourcefrom=query.news_sourcefrom;
+    const news_typecat=query.news_typecat;
+    const news_sort=query.news_sort;
     console.log(catalog);
-    const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+    let option = {
+      params: {
+        key: input,
+        page_no:page,
+        page_size:pageSize,
+        size:size1
+      }
+  }
+    const url = `http://47.100.55.98/api/info/object`;
     let result = axios
-      .get(url)
+      .get(url,option)
       .then(res =>{ 
         if(res.data.code===200){
           this.setState({
             data: res.data.data.result,
-            total: res.data.data.result.length,
+            total: res.data.data.allResultNum,
             loading: false
           })
           console.log(res.data.data.result);
         }
       });
-    const newsurl=`http://47.100.55.98/api/news/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
+      let optionnews = {
+        params: {
+          key: input,
+          page_no:pagenews,
+          page_size:pageSize,
+          /* author:news_author===0? "言车一社":"言车一社", */
+        }
+    }
+    if(news_author!=0)
+    optionnews.params.author=news_author;
+    if(news_sourcefrom!=0)
+    optionnews.params.source=news_sourcefrom;
+    if(news_typecat!="all")
+    optionnews.params.category=news_typecat;
+    if(news_typecat!="primary")
+    optionnews.params.sort=news_sort;
+    console.log(optionnews);
+    const newsurl=`http://47.100.55.98/api/news/object`;
     let resultnews = axios
-    .get(newsurl)
+    .get(newsurl,optionnews)
     .then(resnews =>{ 
       if(resnews.data.code===200){
         this.setState({
-          datanews: resnews.data.data.result,
-          totalnews: resnews.data.data.result.length,
-          loadingnews: false
+          datanews: resnews.data.data.result.filter(function(a) {
+            /* if(query.catalog!=2)
+              query.time =0 */
+            if(query.catalog!=2 || query.time ===0)
+              return a.time
+            else{console.log(query.time)
+            return a.time > query.time} ;
+          }),
+          totalnews:resnews.data.data.allResultNum,
+          loadingnews: false,
+         
         })
         console.log(resnews.data.data.result);
       }
     });
   }
-  changePage = (offset) => {
-    const page = 1 + offset / pageSize;
-    const pagenews = 1 + offset / pageSize;
-    this.setState({ 
-      offset: offset,
-      page: page,
-      pagenews:pagenews,
-      loading: true,
-      loadingnews:true
-    });
-    this.fetchData(this.state.query, page);
-  }
-  changenewsPage = (offset) => {
-    const page = 1 + offset / pageSize;
-    const pagenews = 1 + offset / pageSize;
-    this.setState({ 
-      offset: offset,
-      page: page,
-      pagenews:pagenews,
-      loading: true,
-      loadingnews:true
-    });
-    this.fetchData(this.state.query, page);
-  }
+ 
   
   render() {
+    
+    var date = new Date();
+var year=date.getFullYear(); 
+var mon=date.getMonth()+1;
+var day=date.getDate();
+var h=date.getHours(); 
+var m=date.getMinutes();
+var s=date.getSeconds(); 
+    var submitTime = "";
+submitTime += year + "-";
+if(mon >= 10) {
+          submitTime += mon + "-";
+        }else {
+          submitTime += "0" + mon + "-";
+        }
+        if(day >= 10) {
+          submitTime += day;
+        }else {
+          submitTime += "0" + day;
+        }
+        submitTime +=" ";
+        if(h >= 10) {
+          submitTime += h + ":";
+        }else {
+          submitTime += "0" + h + ":";
+        }
+        if(m >= 10) {
+          submitTime += m + ":";
+        }else {
+          submitTime += "0" + m + ":";
+        }
+        if(s >= 10) {
+          submitTime += s;
+        }else {
+          submitTime += "0" + s;
+        }
     const {classes, query} = this.props;
-    const { offset, data, total, loading,datanews,loadingnews,totalnews } = this.state;
+    const { offset, offsetnews,data, total, loading,datanews,loadingnews,totalnews,page,pagenews} = this.state;
+    const changePage = (offset,pagenews) => {
+      const page = 1 + offset / pageSize;
+     /*  const pagenews = 1 + offset / pageSize; */
+      this.setState({ 
+        offset: offset,
+        page: page,
+        pagenews:pagenews,
+        loading: true,
+        loadingnews:true
+      });
+      this.fetchData(this.state.query, page,pagenews);
+    }
+    const changenewsPage = (offsetnews,page) => {
+      const pagenews = 1 + offsetnews / pageSize;
+      this.setState({ 
+        offsetnews: offsetnews,
+        page: page,
+        pagenews:pagenews,
+        loading: true,
+        loadingnews:true
+      });
+      this.fetchData(this.state.query, page,pagenews);
+    }
     function favor(fr){
     if(fr<=0){
       return <div>
@@ -182,7 +251,7 @@ class SearchResult extends Component {
           limit={pageSize}
           offset={offset}
           total={total}
-          onClick={(event, offset) => this.changePage(offset)}
+          onClick={(event, offset) => changePage(offset,pagenews)}
           otherPageColor="default"
           currentPageColor="secondary"
         />
@@ -191,13 +260,13 @@ class SearchResult extends Component {
       <Typography variant="subtitle1" component="h2" className={classes.total}>
         [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
       </Typography>
-      <ItemList data={datanews}/>
+      <CarnewsList data={datanews}/>
       <div className={classes.pagination}>
         <Pagination
           limit={pageSize}
-          offset={offset}
+          offset={offsetnews}
           total={totalnews}
-          onClick={(event, offset) => this.changenewsPage(offset)}
+          onClick={(event, offset) => changenewsPage(offset,page)}
           otherPageColor="default"
           currentPageColor="secondary"
         />
@@ -214,7 +283,7 @@ class SearchResult extends Component {
           limit={pageSize}
           offset={offset}
           total={total}
-          onClick={(event, offset) => this.changePage(offset)}
+          onClick={(event, offset) => changePage(offset,pagenews)}
           otherPageColor="default"
           currentPageColor="secondary"
         />
@@ -225,13 +294,13 @@ class SearchResult extends Component {
       <Typography variant="subtitle1" component="h2" className={classes.total}>
         [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
       </Typography>
-      <ItemList data={datanews}/>
+      <CarnewsList data={datanews}/>
       <div className={classes.pagination}>
         <Pagination
           limit={pageSize}
-          offset={offset}
+          offset={offsetnews}
           total={totalnews}
-          onClick={(event, offset) => this.changenewsPage(offset)}
+          onClick={(event, offset) => changenewsPage(offset,page)}
           otherPageColor="default"
           currentPageColor="secondary"
         />

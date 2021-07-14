@@ -97,17 +97,6 @@ class SearchBar extends Component {
         {showMsg && <MessageBar show={showMsg} msg={msg} handleClose={this.handleClose} />}
         <form onSubmit={this.handleSearch}>
             <Paper className={classes.searchBar}>
-                {/* <Select
-                  className={classes.select}
-                  value={catalog}
-                  onChange={this.handleChange("catalog")}
-                  input={<InputBase />}
-                >
-                {catalogs.map((item, index) => (
-                    <MenuItem key={index} value={catalogs.indexOf(item)}>{item}</MenuItem>
-                  ))}
-                </Select>
-                <Divider className={classes.divider} /> */}
                 <IconButton className={classes.iconButton} aria-label="Search"
                   color="primary"
                   // onClick={this.handleClick}

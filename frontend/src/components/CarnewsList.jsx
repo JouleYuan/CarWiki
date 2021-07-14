@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ItemCard from './ItemCard';
+import CarnewsCard from './CarnewsCard';
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const style = {
@@ -10,25 +10,17 @@ const style = {
   }
 }
 
-class ItemList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    }
-  }
-
+class CarnewsList extends Component {
   render() {
     const { classes, data } = this.props;
     return (
       <div className={classes.container}>
-        {
-          data.map((item, index) => (
-            <ItemCard key={index} data={item} />
-          ))
-        }
-      </div >
+        { data.map((item, index) => (
+          <CarnewsCard key={index} data={item} />
+        ))}
+      </div>
     )
   }
 }
 
-export default withStyles(style)(ItemList);
+export default withStyles(style)(CarnewsList);
