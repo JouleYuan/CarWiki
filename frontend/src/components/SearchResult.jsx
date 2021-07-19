@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
-import { Divider } from '_@material-ui_core@4.12.1@@material-ui/core';
+import { Divider } from '@material-ui/core';
 import emitter from "./ev"
 import Filter from "../components/Filter";
 import ZongheCar from './ZongheCar';
