@@ -1,0 +1,18 @@
+[
+    {
+        "brand": "奔驰",
+        "name": "奔驰C级",
+        "picture":"一张车的图片的url",
+        "min_deal_price":"指导价最小值",
+        "max_deal_price":"指导价最大值",
+        "dong_URL":"懂车帝：车辆url",
+        "jia_URL":"汽车之家：车辆url",
+        "dong_judge":"懂车帝：车辆评分",
+        "jia_judge":"汽车之家：车辆评分",
+        "size":"中型车",
+        "type":"轿车、SUV、MPV、跑车、微面、轻客、卡车",
+        "engine":"发动机",
+        "gearbox":"变速箱",
+        "Time":"上市时间(YYMMDD:HHMM)"
+    }
+]
