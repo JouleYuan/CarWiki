@@ -25,7 +25,7 @@ public class CarInfoController {
     private CarInfoService carInfoService;
 
     @GetMapping("/object")
-    public ResponseData getObjects(@RequestParam("key") String key,
+    public ResponseData getObjects(@RequestParam(value = "key", required = false) String key,
                                    @RequestParam("page_no") int pageNo,
                                    @RequestParam("page_size") int pageSize,
                                    @RequestParam(value = "sort", defaultValue = "primary") String sort,
@@ -34,7 +34,8 @@ public class CarInfoController {
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("q.op", "OR");
-        queryMap.put("q", "brand:\"" + key + "\"~4" + " name:\"" + key + "\"~4");
+        if(key == null) queryMap.put("q", "*");
+        else queryMap.put("q", "brand:\"" + key + "\"~4" + " name:\"" + key + "\"~4");
         queryMap.put("start", String.valueOf((pageNo - 1) * pageSize));
         queryMap.put("rows", String.valueOf(pageSize));
 
@@ -58,12 +59,13 @@ public class CarInfoController {
     }
 
     @RequestMapping("/statistics")
-    public ResponseData getStatistics(@RequestParam("key") String key,
+    public ResponseData getStatistics(@RequestParam(value = "key", required = false) String key,
                                       @RequestParam(value = "category", required = false) String category,
                                       @RequestParam(value = "size", required = false) String size) {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("q.op", "OR");
-        queryMap.put("q", "brand:\"" + key + "\"~4" + " name:\"" + key + "\"~4");
+        if(key == null) queryMap.put("q", "*");
+        else queryMap.put("q", "brand:\"" + key + "\"~4" + " name:\"" + key + "\"~4");
         queryMap.put("rows", "0");
 
         StringBuilder fq = new StringBuilder();
