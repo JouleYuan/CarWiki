@@ -15,6 +15,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import UploadButtons from './UploadButtons';
 import ChipsArray from './ChipsArray';
 
+
 const style = theme => ({
   iconButton: {
     padding: 10,

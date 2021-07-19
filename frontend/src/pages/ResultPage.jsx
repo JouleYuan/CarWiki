@@ -17,6 +17,11 @@ import SourceFormSelect from '../components/SourceFormSelect';
 import Newstypecat from '../components/Newstypecat';
 import Newssort from '../components/Newssort';
 import CarFilter from '../components/CarFilter';
+import ItemCard from '../components/ItemCard';
+import CarsizeSelect from '../components/CarsizeSelect';
+import CartypeSelect from '../components/CartypeSelect';
+import Carsort from '../components/Carsort';
+import ZongheChart from '../components/ZongheChart';
 const style = theme => ({
   main: {
     backgroundColor: '#F9F7F7',
@@ -70,8 +75,10 @@ class ResultPage extends Component {
     news_author:0,
     news_sourcefrom:0,
     news_typecat:"all",
-    news_sort:"primary"
-
+    news_sort:"primary",
+    car_size:"全部",
+    car_type:"全部",
+    car_sort:"primary",
   }
 
   componentDidMount() {
@@ -99,7 +106,7 @@ class ResultPage extends Component {
 
   render() {
     const {classes} = this.props;
-    const { input, catalog, time,news_author,news_sourcefrom ,news_typecat,news_sort} = this.state;
+    const { input, catalog, time,news_author,news_sourcefrom ,news_typecat,news_sort,car_size,car_type,car_sort} = this.state;
     const changeTime = (time) => {
       this.setState({time});
       console.log("time", time);
@@ -120,10 +127,30 @@ class ResultPage extends Component {
       this.setState({news_sort});
       console.log("news_sort", news_sort);
     }
+    const changecar_size = (car_size) => {
+      this.setState({car_size});
+      console.log("car_size", car_size);
+    }
+    const changecar_type = (car_type) => {
+      this.setState({car_type});
+      console.log("car_type", car_type);
+    }
+    const changecar_sort = (car_sort) => {
+      this.setState({car_sort});
+      console.log("car_sort", car_sort);
+    }
     function favor(fr){
-      if(fr<=0){}
+      if(fr<=0){
+        return <div>
+          <ZongheChart query={{"input": input, "catalog": catalog, "time": time,"news_author":news_author,"news_sourcefrom":news_sourcefrom,"news_typecat":news_typecat,"news_sort":news_sort,"car_size":car_size,"car_type":car_type,"car_sort":car_sort}} />
+        </div>
+      }
       if(fr==1){
-        return <CarFilter></CarFilter>
+        return <div>
+          <CarsizeSelect className={classes.filter} changecar_size={changecar_size}/>
+          <CartypeSelect className={classes.filter} changecar_size={changecar_type}/>
+          <Carsort className={classes.filter} changecar_sort={changecar_sort}/>
+        </div>
       }
       if(fr==2){
         return <div>
@@ -146,10 +173,11 @@ class ResultPage extends Component {
             <Grid item xs={12} sm={6} md={7}>
               <Switch>
                 <Route path="/search/query/:input" 
-                  render={() => <SearchResult query={{"input": input, "catalog": catalog, "time": time,"news_author":news_author,"news_sourcefrom":news_sourcefrom,"news_typecat":news_typecat,"news_sort":news_sort}} />}
+                  render={() => <SearchResult query={{"input": input, "catalog": catalog, "time": time,"news_author":news_author,"news_sourcefrom":news_sourcefrom,"news_typecat":news_typecat,"news_sort":news_sort,"car_size":car_size,"car_type":car_type,"car_sort":car_sort}} />}
                 />
                 <Route path="/search/tags/all" component={TagList} />
                 <Route path="/search/tags/:tag" component={TagResult} />
+                {/* <Route path="/search/search" component={ItemCard} /> */}
               </Switch>
             </Grid>
             <Grid item xs={12} sm={3} md={3} className={classes.sider}>

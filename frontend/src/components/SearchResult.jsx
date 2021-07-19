@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Divider } from '_@material-ui_core@4.12.1@@material-ui/core';
 import emitter from "./ev"
 import Filter from "../components/Filter";
+import ZongheCar from './ZongheCar';
 const style = {
   pagination: {
     margin: '20px auto'
@@ -27,7 +28,7 @@ const style = {
 
 const pageSize = 10;
 
-const catalogs = ["综合","", "找车", "找资讯"];
+const catalogs = ["综合","", "找车", "找资讯","车辆详细资讯"];
 /* const fetchDataclq = (query, page=1) =>  {
   const input = query.input;
   const url = `http://47.100.55.98/api/info/object?key=${input}&page_no=${page}&page_size=${pageSize}`;
@@ -66,18 +67,18 @@ class SearchResult extends Component {
     size: "SUV",
   }
    // 组件销毁前移除事件监听
-   componentWillUnmount() {
+   /* componentWillUnmount() {
     emitter.removeListener(this.eventEmitter);
-  }
+  } */
 
   componentDidMount() {
     if(this.props.query)
-      this.fetchData(this.props.query, 1,1,this.props.size);
+      this.fetchData(this.props.query, 1,1);
     this.eventEmitter = emitter.addListener("callMe", (msg) => {
         this.setState({
           size: msg
         })
-        this.fetchData(this.props.query, 1,1, msg)
+        this.fetchData(this.props.query, 1,1)
       });
   }
 
@@ -107,22 +108,30 @@ class SearchResult extends Component {
     this.setState({time});
     console.log("time", time);
   }
-  fetchData = (query,page,pagenews,size1) =>  {
+  fetchData = (query,page,pagenews) =>  {
     const input = query.input;
     const catalog = query.catalog || -1;
     const news_author=query.news_author;
     const news_sourcefrom=query.news_sourcefrom;
     const news_typecat=query.news_typecat;
     const news_sort=query.news_sort;
+    const car_size=query.car_size;
+    const car_type=query.car_type;
+    const car_sort=query.car_sort;
     console.log(catalog);
     let option = {
       params: {
         key: input,
         page_no:page,
         page_size:pageSize,
-        size:size1
       }
   }
+  if(car_size!="全部")
+    option.params.size=car_size;
+  if(car_type!="全部")
+    option.params.category=car_type;
+    if(car_sort!="primary")
+    option.params.sort=car_sort;
     const url = `http://47.100.55.98/api/info/object`;
     let result = axios
       .get(url,option)
@@ -245,7 +254,7 @@ if(mon >= 10) {
       <Typography variant="subtitle1" component="h2" className={classes.total}>
         [ {catalogs[query.catalog + 1]} ] - 显示 {total} 条最优搜索结果
       </Typography>
-      <ItemList data={data}/>
+      <ZongheCar data={data}/>
       <div className={classes.pagination}>
         <Pagination
           limit={pageSize}
@@ -256,6 +265,17 @@ if(mon >= 10) {
           currentPageColor="secondary"
         />
       </div>
+      {/* <ItemList data={data}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offset}
+          total={total}
+          onClick={(event, offset) => changePage(offset,pagenews)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div> */}
       <Divider/>
       <Typography variant="subtitle1" component="h2" className={classes.total}>
         [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
@@ -290,6 +310,23 @@ if(mon >= 10) {
       </div>
       </div>;
     }else if(fr==2){
+      return <div>
+      <Typography variant="subtitle1" component="h2" className={classes.total}>
+        [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果
+      </Typography>
+      <CarnewsList data={datanews}/>
+      <div className={classes.pagination}>
+        <Pagination
+          limit={pageSize}
+          offset={offsetnews}
+          total={totalnews}
+          onClick={(event, offset) => changenewsPage(offset,page)}
+          otherPageColor="default"
+          currentPageColor="secondary"
+        />
+      </div>
+      </div>;
+    }else if(fr==3){
       return <div>
       <Typography variant="subtitle1" component="h2" className={classes.total}>
         [ {catalogs[query.catalog + 1]} ] - 显示 {totalnews} 条最优搜索结果

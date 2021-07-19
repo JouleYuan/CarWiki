@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomePage from './pages/HomePage';
 import ResultPage from './pages/ResultPage';
+import DetailPage from './pages/DetailPage';
 import {  MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 // const font = "'Lato', sans-serif";
@@ -47,6 +48,7 @@ function App() {
           path={["/search/query/:input", "/search/tags/all", "/search/tags/:tag"]} 
           component={ResultPage} 
         />
+        <Route path="/search/carinfo/detail" component={DetailPage} />
       </Switch>
     </Router>
     </MuiThemeProvider>
