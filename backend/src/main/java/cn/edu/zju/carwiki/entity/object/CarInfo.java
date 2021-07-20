@@ -48,4 +48,16 @@ public class CarInfo {
 
     /** The gearbox of the car */
     private String gearbox;
+
+    private Double score0;
+
+    private Double score1;
+
+    private Double score2;
+
+    private Double score3;
+
+    private Double score4;
+
+    private Double score6;
 }

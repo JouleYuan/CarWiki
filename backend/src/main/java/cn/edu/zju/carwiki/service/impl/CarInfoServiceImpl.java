@@ -22,7 +22,7 @@ import java.util.Map;
 @Service(value = "CarInfoService")
 public class CarInfoServiceImpl implements CarInfoService {
     static final double[] priceBounds = new double[] {0, 10, 25, 50, 100};
-    static final double[] scoreBounds = new double[] {0, 1, 2, 3, 4, 5};
+    static final double[] scoreBounds = new double[] {0, 3.5, 4, 4.5, 5};
 
     @Autowired
     private SolrJClient solrJClient;
@@ -54,8 +54,14 @@ public class CarInfoServiceImpl implements CarInfoService {
             String type = (String) i.getFieldValue("category");
             String engine = (String) i.getFieldValue("engine");
             String gearbox = (String) i.getFieldValue("gearbox");
+            Double score0 = (Double) i.getFieldValue("score0");
+            Double score1 = (Double) i.getFieldValue("score1");
+            Double score2 = (Double) i.getFieldValue("score2");
+            Double score3 = (Double) i.getFieldValue("score3");
+            Double score4 = (Double) i.getFieldValue("score4");
+            Double score5 = (Double) i.getFieldValue("score5");
             CarInfo info = new CarInfo(name, brand, picture, minDealPrice, maxDealPrice, dongUrl, jiaUrl,
-                    dongScore, jiaScore, size, type, engine, gearbox);
+                    dongScore, jiaScore, size, type, engine, gearbox, score0, score1, score2, score3, score4, score5);
             result.add(info);
         }
         resultMap.put("result", result);

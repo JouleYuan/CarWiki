@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cn.edu.zju</groupId>
 	<artifactId>carwiki</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>carwiki</name>
 	<description>Backend for CarWiki</description>
 	<properties>
