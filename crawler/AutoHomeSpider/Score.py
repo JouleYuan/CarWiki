@@ -18,17 +18,18 @@ for i in range(1,len(original)):
     x=original[i][7]
     y=original[i][8]
     if(x==""):
-        t[7]=0
         x=0
     if(y==""):
-        t[8]=0
         y=0
     x=float(x)
     y=float(y)
-    if(x==0): 
+    if(x==0):
+        t[7]="" 
         x=3.8
     if(y==0):
+        t[8]=""
         y=4.1
+        
     
     for i in range(6):
         seed = random.random()
@@ -38,4 +39,5 @@ for i in range(1,len(original)):
     with open("CarInfoFaked.csv", "a", encoding='utf-8',newline="") as f:
         cw = csv.writer(f)
         #print(original[i])
+        print(t[7],t[8])
         cw.writerow(t)
