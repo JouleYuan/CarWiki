@@ -68,14 +68,21 @@ class TagResult extends Component {
     
   } */
   fetchData = (tag, page=1) =>  {
-    const url = `http://47.100.55.98/api/news/object?key=${tag}&page_no=${page}&page_size=${pageSize}`;
+    let option = {
+      params: {
+        key: tag,
+        page_no:page,
+        page_size:pageSize,
+      }
+  }
+    const url = `http://47.100.55.98/api/info/object`;
     let result = axios
-      .get(url)
+      .get(url,option)
       .then(res =>{ 
         if(res.data.code===200){
           this.setState({
             data: res.data.data.result,
-            total: res.data.data.result.length,
+            total: res.data.data.allResultNum,
             loading: false
           })
           console.log(res.data.data.result);

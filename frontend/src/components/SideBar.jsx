@@ -65,6 +65,7 @@ class SideBar extends Component {
     this.setState({
       selectedIndex: index
     })
+    this.props.changeCatalog(index);
   }
 
   selectCatalog = (event, index) =>{

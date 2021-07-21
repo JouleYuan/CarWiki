@@ -26,9 +26,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ChipsArray() {
   const classes = useStyles();
   const [chipData, setChipData] = React.useState([
-    { key: 0, label: 'ModelY' },
-    { key: 1, label: '大众召回速腾、探影等车型' },
-    { key: 2, label: '国内油价上调' },
+    { key: 0, label: 'Model Y' },
+    { key: 1, label: '大众召回速腾' },
+    { key: 2, label: '国内油价' },
     { key: 3, label: '滴滴出行”APP被下架' },
     { key: 4, label: '懂车帝' },
   ]);

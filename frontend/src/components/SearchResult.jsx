@@ -121,11 +121,13 @@ class SearchResult extends Component {
     console.log(catalog);
     let option = {
       params: {
-        key: input,
+        /* key: input, */
         page_no:page,
         page_size:pageSize,
       }
   }
+  if(input!="全部")
+    option.params.key=input;
   if(car_size!="全部")
     option.params.size=car_size;
   if(car_type!="全部")

@@ -32,8 +32,15 @@ class Hello extends React.Component {
   { country: ""+datascore[1].floor+"~"+datascore[1].ceiling, population: datascore[1].dong_num },
   { country: ""+datascore[2].floor+"~"+datascore[2].ceiling, population: datascore[2].dong_num },
   { country: ""+datascore[3].floor+"~"+datascore[3].ceiling, population: datascore[3].dong_num },
-  { country: ""+datascore[4].floor+"~"+datascore[4].ceiling, population: datascore[4].dong_num },
+  /* { country: ""+datascore[4].floor+"~"+datascore[4].ceiling, population: datascore[4].dong_num }, */
              ],
+             datareadtqiche:[
+              { country: ""+datascore[0].floor+"~"+datascore[0].ceiling, population: datascore[0].jia_num },
+    { country: ""+datascore[1].floor+"~"+datascore[1].ceiling, population: datascore[1].jia_num },
+    { country: ""+datascore[2].floor+"~"+datascore[2].ceiling, population: datascore[2].jia_num },
+    { country: ""+datascore[3].floor+"~"+datascore[3].ceiling, population: datascore[3].jia_num },
+    /* { country: ""+datascore[4].floor+"~"+datascore[4].ceiling, population: datascore[4].dong_num }, */
+               ],
           tDate:[
               ],
               
@@ -55,6 +62,7 @@ class Hello extends React.Component {
       this.readHistogram()
       this.readtiao()
       this.readPieChart()
+      this.readtqiche()
       /* this.readt() */
       /* this.readPieChart()
       this.readt()
@@ -141,48 +149,21 @@ class Hello extends React.Component {
   // 默认选择
   interval.elements[0].setState('selected', true);
   }
-   readt(){
+  readtqiche(){
     const chart = new Chart({
-      container: 'container2',
+      container: 'container4',
       autoFit: true,
       height: 500,
     });
     
-    chart.data(this.state.datareadt);
-    chart.scale({
-      month: {
-        range: [0, 1],
-      },
-      temperature: {
-        nice: true,
-      },
-    });
-    
+    chart.data(this.state.datareadtqiche);
+    chart.scale('population', { nice: true });
+    chart.coordinate().transpose();
     chart.tooltip({
-      showCrosshairs: true,
-      shared: true,
+      showMarkers: false
     });
-    
-    chart.axis('数量', {
-      label: {
-        formatter: (val) => {
-          return val + '台';
-        },
-      },
-    });
-    
-    chart
-      .line()
-      .position('month*数量')
-      .color('city')
-      .shape('smooth');
-    
-    chart
-      .point()
-      .position('month*数量')
-      .color('city')
-      .shape('circle');
-    
+    chart.interaction('active-region');
+    chart.interval().position('country*population');
     chart.render();
   } 
   readtiao(){
@@ -208,18 +189,20 @@ class Hello extends React.Component {
   render() {
     /* let {dataout}=this.props;
     console.log(dataout); */
-    const itemStyle = {width: '49vw',height:'50vh',border:'1px solid #ccc'};
-    const itemStyle3 = {width: '100vw',height:'50vh',border:'1px solid #ccc'};
+    const itemStyle = {width: '39vw',height:'40vh',border:'1px solid #ccc'};
+    const itemStyle3 = {width: '100vw',height:'40vh',border:'1px solid #ccc'};
     const divStyle = {display:'flex',flexWrap:'wrap',justifyContent:'space-between'};
     return (
       <div style = {divStyle}>
         <span>品牌车辆价格统计</span>
         <div style = {itemStyle} id="container2"></div>
-        <span>品牌车辆评分统计</span>
-        <div style = {itemStyle3} id="container3"></div>
-        
         <span>资讯统计</span>
         <div style = {itemStyle} id="container"></div>
+        <span>懂车帝车辆评分统计</span>
+        <div style = {itemStyle3} id="container3"></div>
+        <span>汽车之家车辆评分统计</span>
+        <div style = {itemStyle3} id="container4"></div>
+
         {/* <span>类型数量统计</span>
         <div style = {itemStyle3} id="container4"></div>
         <span>接收消息量</span>

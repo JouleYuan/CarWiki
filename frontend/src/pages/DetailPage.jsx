@@ -13,6 +13,127 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import SearchResult from '../components/SearchResult';
+import Grid from '@material-ui/core/Grid';
+import DataSet from '@antv/data-set';
+import { Chart } from '@antv/g2';
+class Hello extends React.Component {
+  constructor(props){
+    super(props);
+    let {score0}=this.props;
+    let {score1}=this.props;
+    let {score2}=this.props;
+    let {score3}=this.props;
+    let {score4}=this.props;
+    let {score6}=this.props;
+    this.state = {
+      data:[
+        { item: '配置', score: score0 },
+        { item: '外观', score: score1 },
+        { item: '舒适', score: score2 },
+        { item: '空间', score: score3 },
+        { item: '操纵', score: score4, },
+        { item: '动力', score: score6 },
+      ]
+    }
+  }
+  
+  componentDidMount(){
+      this.radermy()
+  }
+  radermy(){
+    const { DataView } = DataSet;
+const dv = new DataView().source(this.state.data);
+dv.transform({
+  type: 'fold',
+  fields: ['score'], // 展开字段集
+  key: 'user', // key字段
+  value: 'score', // value字段
+});
+
+const chart = new Chart({
+  container: 'container',
+  autoFit: true,
+  height: 500,
+});
+chart.data(dv.rows);
+chart.scale('score', {
+  min: 0,
+  max: 5,
+});
+chart.coordinate('polar', {
+  radius: 1.0,
+});
+chart.tooltip({
+  shared: true,
+  showCrosshairs: true,
+  crosshairs: {
+    line: {
+      style: {
+        lineDash: [4, 4],
+        stroke: '#333'
+      }
+    }
+  }
+});
+chart.axis('item', {
+  line: null,
+  tickLine: null,
+  grid: {
+    line: {
+      style: {
+        lineDash: null,
+      },
+    },
+  },
+});
+chart.axis('score', {
+  line: null,
+  tickLine: null,
+  grid: {
+    line: {
+      type: 'line',
+      style: {
+        lineDash: null,
+      },
+    },
+  },
+});
+
+chart
+  .line()
+  .position('item*score')
+  .color('user')
+  .size(2);
+chart
+  .point()
+  .position('item*score')
+  .color('red')
+  .shape('circle')
+  .size(4)
+  .style({
+    stroke: '#fff',
+    lineWidth: 1,
+    fillOpacity: 1,
+  });
+chart
+  .area()
+  .position('item*score')
+  .color('user');
+chart.render();
+  }
+  render() {
+    const itemStyle = {width: '59vw',height:'50vh',border:'1px solid #ccc'};
+    const itemStyle3 = {width: '100vw',height:'40vh',border:'1px solid #ccc'};
+    const divStyle = {display:'flex',flexWrap:'wrap',justifyContent:'space-between'};
+    return (
+      <div style = {divStyle}>
+        <span>CarWiki评分统计</span>
+        <div style = {itemStyle} id="container"></div>
+
+      </div>
+    );
+  }
+}
 const style = theme => ({
   main: {
     backgroundColor: '#F9F7F7',
@@ -96,27 +217,20 @@ class DetailPage extends Component {
         <NavBar className={classes.NavBar} />
         <br />
         <br />
-
+      
 
 
         <div className={classes.wrapper}>
-
-          <div style={{ border: "1px #000", paddingLeft: "120px" }}>
+        <div style={{ border: "1px #000", paddingLeft: "120px" }}>
             <Box fontSize={32} fontWeight={1000} fontFamily="roboto" m={1} >
               {data.brand}-{data.name}
             </Box>
           </div>
-
-          <div style={{ border: "1px #000", float: "left", width: "900px", height: "800px" }}>
-            <img src={data.picture} width="900"></img>
-            <SearchResult query={{"input": data.name,"catalog":3}} />
+        <div style={{ border: "1px #000", float: "left", width: "650px", height: "800px" }}>
+                <img src={data.picture} width="700"></img>
           </div>
-
           <div style={{ border: "1px #000", float: "right", width: "650px", height: "800px" }}>
-
-
-
-            <span style={{ color: "#666d7f", fontSize: "14px" }}>
+          <span style={{ color: "#666d7f", fontSize: "14px" }}>
               厂商指导价
             </span>
             <span style={{ position: "relative", top: "2px", color: "#f60", fontSize: "26px", fontWeight: "700", paddingLeft: "4px", lineHeight: "1" }}>
@@ -187,16 +301,24 @@ class DetailPage extends Component {
                 </TableBody>
               </Table>
             </TableContainer>
-            
           </div>
 
-        </div>
+        <Grid container spacing={4} className={classes.content}>
+        <Grid item xs={12} sm={5} md={4} className={classes.sider}>
+           <Hello  score0={data.score0} score1={data.score1} score2={data.score2} score3={data.score3} score4={data.score4} score6={data.score6}></Hello>
+            </Grid>
+        <Grid item xs={12} sm={9} md={7}>
+          <SearchResult query={{"input": data.name,"catalog":3}} />
+          </Grid>
+          
+        
+        </Grid>
         <footer className={classes.footer}>
           <Typography variant="body2" component="p">
             &copy;2021 Created By G09
           </Typography>
         </footer>
-
+        </div>
       </div>
 
     )

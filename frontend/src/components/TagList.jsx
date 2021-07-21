@@ -35,20 +35,29 @@ const style = {
   }
 }
 
-// const data = [
-//   {tag: "Spring Cloud", count: 20},
-//   {tag: "Spring Boot", count: 40},
-//   {tag: "Docker", count: 100},
-//   {tag: "Eureka", count: 10},
-//   {tag: "Turbine", count: 20},
-//   {tag: "Zuul", count: 20},
-//   {tag: "Archaius", count: 20},
-//   {tag: "Consul", count: 20},
-//   {tag: "Spring Cloud Bus", count: 20},
-//   {tag: "Ribbon", count: 20},
-// ];
-
-const pageSize = 24;
+ const data = [
+  {tag: "全部", count: 917},
+   {tag: "奔驰", count: 40},
+   {tag: "奥迪", count: 17},
+   {tag: "大众", count: 37},
+  {tag: "长安", count: 52},
+   {tag: "江淮", count: 21},
+   {tag: "宝马", count: 31},
+  {tag: "北汽", count: 8},
+   {tag: "宝骏", count: 15},
+   {tag: "特斯拉", count: 4},
+  {tag: "劳斯莱斯", count: 5},
+  {tag: "保时捷", count: 8},
+  {tag: "阿尔法・罗密欧", count: 2},
+  {tag: "巴博斯", count: 1},
+  {tag: "宝沃", count: 2},
+  {tag: "北汽昌河", count: 11},
+  {tag: "北汽绅宝", count: 11},
+  {tag: "北汽制作", count: 8},
+ 
+];
+const total=25;
+const pageSize = 100;
 class TagList extends Component {
   state = {
     data: [],
@@ -63,7 +72,7 @@ class TagList extends Component {
   }
 
   fetchData = (page=1) => {
-    const url = `http://10.214.213.43:9999/getAllTag?page=${page}&size=${pageSize}&key=`;
+    const url = `http://47.100.55.98/api/info/object?page_no=${page}&page_size=${pageSize}`;
     fetch(url)
       .then(res => res.json())
       .then((json) => {
@@ -93,19 +102,19 @@ class TagList extends Component {
 
   render() {
     const { classes } = this.props;
-    const {data, total, offset, loading} = this.state;
+    const { offset, loading} = this.state;
     return (
       loading ? (<div className={classes.progress}>
         <CircularProgress />
       </div>) : (
       <div>
         <Typography variant="subtitle1" component="h2" className={classes.title}>
-          共计 {total} 个技术标签：
+          共计 {total} 个车辆品牌标签：
         </Typography>
         <Grid container className={classes.root}>
             { data.map((item, index) => (
               <Grid item xs={3} className={classes.grid} key={index}>
-                <Link to={`/search/tags/${item.tag}`} style={{textDecoration: 'none'}}>
+                <Link to={`/search/query/${item.tag}`} style={{textDecoration: 'none'}}>
                   <Chip
                     icon={<LabelOutlined style={{fontSize: '18px'}}/>}
                     label={item.tag}

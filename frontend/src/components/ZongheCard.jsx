@@ -18,7 +18,7 @@ import { withRouter } from 'react-router-dom';
 const style = theme => ({
   card: {
     margin: '10px',
-    padding: '10px'
+   
   },
   title: {
     color: 'primary'
@@ -78,7 +78,7 @@ class ZongheCard extends Component {
 
             <Link href={data.dong_url} color="textSecondary" variant="caption" target="_blank">
               <LinkIcon style={{ fontSize: '16px', paddingRight: '5px' }} />
-              {data.name} 厂商指导价：{data.min_price}~{data.max_price}
+              {data.name}<br/> 厂商指导价：<br/>{data.min_price}~{data.max_price}
             </Link>
 
             <br/>

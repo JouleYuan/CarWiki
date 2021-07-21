@@ -140,9 +140,13 @@ class ResultPage extends Component {
       console.log("car_sort", car_sort);
     }
     function favor(fr){
-      if(fr<=0){
+      if(fr==-1){
         return <div>
           <ZongheChart query={{"input": input, "catalog": catalog, "time": time,"news_author":news_author,"news_sourcefrom":news_sourcefrom,"news_typecat":news_typecat,"news_sort":news_sort,"car_size":car_size,"car_type":car_type,"car_sort":car_sort}} />
+          <Typography variant="subtitle1" component="h2" style={{color: '#7D7D7D', margin:'25px 0'}}>
+                <CloudCircle /> 标签词云(猜你想看)
+              </Typography>
+              <TagCloud query={{"input": input, "catalog": catalog, "time": time,"news_author":news_author,"news_sourcefrom":news_sourcefrom,"news_typecat":news_typecat,"news_sort":news_sort,"car_size":car_size,"car_type":car_type,"car_sort":car_sort}}/>
         </div>
       }
       if(fr==1){

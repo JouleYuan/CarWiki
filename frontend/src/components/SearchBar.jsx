@@ -88,7 +88,12 @@ class SearchBar extends Component {
       showMsg: false,
     })
   }
-
+  handleGetMsg = (value) => {
+    console.log(value)
+    this.setState({
+      input: value
+    })
+  }
   render() {
     const { classes } = this.props;
     const { input, showMsg, msg} = this.state;
@@ -123,7 +128,7 @@ class SearchBar extends Component {
                   <LinkedCameraIcon/>
 
                 </IconButton> */}
-                <UploadButtons/>
+                <UploadButtons getMsg={this.handleGetMsg}/>
             </Paper>
           {/* </Grid>
         </Grid> */}
